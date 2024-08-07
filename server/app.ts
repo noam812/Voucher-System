@@ -4,11 +4,14 @@ import dotenv from "dotenv";
 import userRoutes from "./routes/user";
 import voucherRoutes from "./routes/voucher";
 import purchasedVoucerRoutes from "./routes/purchasedVoucher";
+var cors = require("cors");
 
 dotenv.config();
 
 const app = express();
+
 const PORT = process.env.PORT || 3001;
+app.use(cors());
 
 app.use(express.json());
 
