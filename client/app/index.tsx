@@ -7,7 +7,7 @@ import {
   Button,
   TouchableOpacity,
 } from "react-native";
-import { getVouchers, purchaseVoucher } from "../services/api";
+import { getVouchers, purchaseVoucher, getUserProfile } from "../services/api";
 import VoucherItem from "@/components/VoucherItem";
 import { Link } from "expo-router";
 import { useAuth } from "../context/AuthContext";
@@ -21,7 +21,7 @@ interface Voucher {
 
 const HomeScreen = () => {
   const [vouchers, setVouchers] = useState<Voucher[]>([]);
-  const { isLoggedIn, user, logout } = useAuth();
+  const { isLoggedIn, user, logout, updateUser } = useAuth();
 
   const fetchVouchers = async () => {
     try {
@@ -45,6 +45,8 @@ const HomeScreen = () => {
       await purchaseVoucher(voucherId, user._id);
       // Refresh voucher list or update local state
       await fetchVouchers();
+      const updatedUser = await getUserProfile(user._id);
+      updateUser(updatedUser);
     } catch (error) {
       console.error("Error purchasing voucher:", error);
     }

@@ -8,6 +8,7 @@ interface AuthContextProps {
   user: any;
   login: (user: any) => void;
   logout: () => void;
+  updateUser: (updatedUser: any) => void;
 }
 
 const AuthContext = createContext<AuthContextProps>({
@@ -15,21 +16,25 @@ const AuthContext = createContext<AuthContextProps>({
   user: null,
   login: () => {},
   logout: () => {},
+  updateUser: () => {},
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const router = useRouter();
 
   useEffect(() => {
-    const checkAuth = async () => {
+      const checkAuth = async () => {
+        if (!isLoggedIn || !user) {
+          return;
+        }
       const token = await SecureStore.getItemAsync("token");
       if (token) {
-        try {
-          const userProfile = await getUserProfile();
+          try {
+          const userProfile = await getUserProfile(user._id);
           setUser(userProfile);
           setIsLoggedIn(true);
         } catch (error) {
@@ -58,9 +63,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const updateUser = (updatedUser: any) => {
+    setUser(updatedUser);
+  };
+
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, user, login, logout: logoutUser }}
+      value={{ isLoggedIn, user, login, logout: logoutUser, updateUser }}
     >
       {children}
     </AuthContext.Provider>

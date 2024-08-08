@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 services:
   server:
     build: ./server
@@ -6,7 +6,8 @@ services:
       - "3001:3001"
     environment:
       - MONGODB_URI=mongodb://mongodb:27017/voucher_system
-      - JWT_SECRET=your_jwt_secret
+    secrets:
+      - jwt_secret
     depends_on:
       - mongodb
   client:
@@ -25,3 +26,7 @@ services:
       - mongodb_data:/data/db
 volumes:
   mongodb_data:
+
+secrets:
+  jwt_secret:
+    external: true

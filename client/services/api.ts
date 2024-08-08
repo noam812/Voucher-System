@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
-const API_URL = "http://10.0.0.21:3001";
+const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://10.0.0.21:3001";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -35,8 +35,8 @@ export const logout = async () => {
   await SecureStore.deleteItemAsync("token");
 };
 
-export const getUserProfile = async () => {
-  const response = await api.get("/users/profile");
+export const getUserProfile = async (userId : string) => {
+  const response = await api.get(`users/${userId}`);
   return response.data;
 };
 
