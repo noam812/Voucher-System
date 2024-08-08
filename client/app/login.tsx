@@ -7,7 +7,9 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
+import { useRouter } from "expo-router";
 import { login, signup } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 const LoginRegisterScreen = () => {
   const [email, setEmail] = useState("");
@@ -15,6 +17,8 @@ const LoginRegisterScreen = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
+  const { login: contextLogin } = useAuth();
+  const router = useRouter();
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -44,8 +48,10 @@ const LoginRegisterScreen = () => {
 
     if (valid) {
       try {
-        await login(email, password);
+        const userData = await login(email, password);
+        contextLogin(userData.user); // Update context with user details
         Alert.alert("Login Successful", `Welcome, ${email}!`);
+        router.push("/"); // Navigate to homepage
       } catch (error) {
         Alert.alert("Login Failed", "Invalid email or password.");
       }
@@ -71,8 +77,10 @@ const LoginRegisterScreen = () => {
 
     if (valid) {
       try {
-        await signup(email, password);
+        const userData = await signup(email, password);
+        contextLogin(userData.user); // Update context with user details
         Alert.alert("Registration Successful", `Welcome, ${email}!`);
+        router.push("/"); // Navigate to homepage
       } catch (error) {
         Alert.alert(
           "Registration Failed",
@@ -92,6 +100,7 @@ const LoginRegisterScreen = () => {
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
+        placeholderTextColor="#ccc"
       />
       {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
       <TextInput
@@ -100,6 +109,7 @@ const LoginRegisterScreen = () => {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+        placeholderTextColor="#ccc"
       />
       {passwordError ? (
         <Text style={styles.errorText}>{passwordError}</Text>
@@ -131,42 +141,45 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: 20,
+    backgroundColor: "black",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
+    color: "white",
     marginBottom: 20,
   },
   input: {
     height: 40,
-    borderColor: "#ccc",
+    borderColor: "#ff132a",
     borderWidth: 1,
+    borderRadius: 5,
     marginBottom: 10,
     paddingHorizontal: 10,
-    borderRadius: 5,
+    color: "white",
+  },
+  errorText: {
+    color: "#ff132a",
+    marginBottom: 10,
   },
   button: {
-    backgroundColor: "#007AFF",
+    backgroundColor: "#ff132a",
     padding: 10,
     borderRadius: 5,
     alignItems: "center",
+    marginBottom: 10,
   },
   buttonText: {
     color: "white",
     fontWeight: "bold",
   },
   switchButton: {
-    marginTop: 20,
     alignItems: "center",
   },
   switchButtonText: {
-    color: "#007AFF",
+    color: "#ff132a",
     fontWeight: "bold",
-  },
-  errorText: {
-    color: "red",
-    marginBottom: 10,
   },
 });
 

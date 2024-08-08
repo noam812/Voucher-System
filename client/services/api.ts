@@ -50,15 +50,21 @@ export const getVouchers = async () => {
   return response.data;
 };
 
-export const purchaseVoucher = async (voucherId: string) => {
+export const purchaseVoucher = async (voucherId: string , userId : string) => {
   const response = await api.put("/purchase/", {
     voucherId,
-    userId: "66b3950b25c15c7e0313a9fb",
+    userId
   });
   return response.data;
 };
 
-export const getUserPurchasedVouchers = async () => {
-  const response = await api.get("/users/vouchers");
+export const getVoucherById = async (voucherId: string) => {
+  const response = await api.get(`/vouchers/${voucherId}`);
+  return response.data;
+};
+
+
+export const getUserPurchasedVouchers = async (userId: string) => {
+  const response = await api.get(`/users/${userId}/vouchers`);
   return response.data;
 };

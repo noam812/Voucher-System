@@ -28,7 +28,6 @@ router.get("/:id", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-        console.log("trying to get voucher");
   try {
     const vouchers = await Voucher.find();
     if (!vouchers) {

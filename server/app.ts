@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import userRoutes from "./routes/user";
 import voucherRoutes from "./routes/voucher";
 import purchasedVoucerRoutes from "./routes/purchasedVoucher";
+import errorHandler from "./middleware/errorHandler";
 var cors = require("cors");
 
 dotenv.config();
@@ -29,6 +30,8 @@ mongoose
 app.use("/users", userRoutes);
 app.use("/vouchers", voucherRoutes);
 app.use("/purchase", purchasedVoucerRoutes);
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

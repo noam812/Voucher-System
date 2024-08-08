@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { useAuth } from "../context/AuthContext";
 
 interface VoucherItemProps {
   company: string;
@@ -14,13 +15,23 @@ const VoucherItem: React.FC<VoucherItemProps> = ({
   amount,
   onPurchase,
 }) => {
+  const { isLoggedIn } = useAuth();
+
+  const handlePurchase = () => {
+    if (!isLoggedIn) {
+      Alert.alert("Not Logged In", "You need to log in to purchase a voucher.");
+      return;
+    }
+    onPurchase();
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.company}>{company}</Text>
       <Text style={styles.cost}>${cost}</Text>
       <Text style={styles.amount}>{amount}</Text>
 
-      <TouchableOpacity style={styles.button} onPress={onPurchase}>
+      <TouchableOpacity style={styles.button} onPress={handlePurchase}>
         <Text style={styles.buttonText}>Purchase</Text>
       </TouchableOpacity>
     </View>
@@ -34,20 +45,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    borderBottomColor: "#ff132a",
+    backgroundColor: "black",
   },
   company: {
     fontSize: 16,
     fontWeight: "bold",
+    color: "white",
   },
   cost: {
     fontSize: 16,
+    color: "white",
   },
   amount: {
     fontSize: 16,
+    color: "white",
   },
   button: {
-    backgroundColor: "#007AFF",
+    backgroundColor: "#ff132a",
     padding: 10,
     borderRadius: 5,
   },

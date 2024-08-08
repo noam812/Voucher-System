@@ -73,4 +73,53 @@ router.put(`/:id/balance`, auth, async (req, res) => {
   }
 });
 
+
+router.get("/:id/vouchers", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).populate(
+      "purchasedVouchers"
+    );
+    if (!user) {
+      return res.status(404).json("User not found");
+    }
+    res.json(user.purchasedVouchers);
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json("An error occurred while fetching the user's vouchers");
+  }
+});
+
+
+router.post(`/login`, async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json("User not found");
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json("Invalid credentials");
+    }
+
+    // Generate a token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
+      expiresIn: "1h",
+    });
+
+    console.log(user);
+
+    res.json({ user, token });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json("An error occurred while logging in");
+  }
+});
+
+
+
+
 export default router;

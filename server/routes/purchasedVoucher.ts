@@ -5,7 +5,7 @@ import Voucher from "../models/voucher";
 
 const router = express.Router();
 
-router.post(`/`, async (req, res) => {
+router.put(`/`, async (req, res) => {
   try {
     const { userId, voucherId } = req.body;
     const user = await User.findById(userId);
@@ -37,23 +37,6 @@ router.post(`/`, async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json("An error occurred while purchasing the voucher");
-  }
-});
-
-router.get("/:id/vouchers", async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id).populate(
-      "purchasedVouchers"
-    );
-    if (!user) {
-      return res.status(404).json("User not found");
-    }
-    res.json(user.purchasedVouchers);
-  } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .json("An error occurred while fetching the user's vouchers");
   }
 });
 
