@@ -1,3 +1,6 @@
+Just experimenting with react-native via Expo Go framework.
+
+
 
 To set up a MongoDB container using Docker, run the following command:
 
